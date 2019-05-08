@@ -19,7 +19,7 @@ public class BootStrapData implements CommandLineRunner{
 	private InterpreterContextRepository contextRepository;
 	
 	@Value("${default.interpreter.path}")
-	private String pythonPath;
+	private String interpreterPath;
 
 	@Value("${default.interpreter.name}")
 	private String interpreterName;
@@ -32,7 +32,7 @@ public class BootStrapData implements CommandLineRunner{
 	public void run(String... args) throws Exception {
 		Session session = new Session(321L, null, null) ;
 		
-		InterpreterContext context = new InterpreterContext(interpreterName, pythonPath, null);
+		InterpreterContext context = new InterpreterContext(interpreterName, interpreterPath, null);
 		List<Session> sessions = Arrays.asList(session);
 		context.setSessions(sessions);
 		session.setContext(context);
