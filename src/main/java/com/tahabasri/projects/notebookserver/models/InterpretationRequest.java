@@ -18,27 +18,27 @@ public class InterpretationRequest {
 	 * Information status indicating that the request has good syntax but no session
 	 * needed to execute it
 	 */
-	public static int INTERPRETATION_REQUEST_NO_NEED_FOR_SESSION = -800;
+	public static final int INTERPRETATION_REQUEST_NO_NEED_FOR_SESSION = -800;
 	/**
 	 * Information status indicating that the request has good syntax but no session
 	 * was already found in interpreter context, it will be required to assign new
 	 * session for the given request
 	 */
-	public static int INTERPRETATION_REQUEST_NO_SESSION_ID = -850;
+	public static final int INTERPRETATION_REQUEST_NO_SESSION_ID = -850;
 	/**
 	 * Error status indicating that no interpreter was found for the given request
 	 */
-	public static int INTERPRETATION_REQUEST_NO_INTERPRETER_FOUND = -900;
+	public static final int INTERPRETATION_REQUEST_NO_INTERPRETER_FOUND = -900;
 	/**
 	 * Error status indicating that the request has wrong syntax when matching it to
 	 * the default request pattern
 	 */
-	public static int INTERPRETATION_REQUEST_WRONG_SYNTAX = -950;
+	public static final int INTERPRETATION_REQUEST_WRONG_SYNTAX = -950;
 	/**
 	 * Information status indicating that the request has good syntax and it is
 	 * ready to be interpreted
 	 */
-	public static int INTERPRETATION_REQUEST_GOOD = -1000;
+	public static final int INTERPRETATION_REQUEST_GOOD = -1000;
 
 	private String interpreterName;
 	private String code;
@@ -50,10 +50,10 @@ public class InterpretationRequest {
 	 * session identifier if required retrieves the interpreter name and parse the
 	 * given code. Finally, a status flag is raised depending on request health
 	 * 
-	 * @param userRequestInput
+	 * @param userRequestInput user request as model
 	 */
 	public InterpretationRequest(UserRequestInput userRequestInput) {
-		String requestTokens[] = userRequestInput.getCode().split(" ", 2);
+		String[] requestTokens = userRequestInput.getCode().split(" ", 2);
 		if (requestTokens.length >= 2) {
 			String interpreterName = requestTokens[0].replace("%", "").trim();
 			String code = requestTokens[1].trim();

@@ -43,7 +43,7 @@ public abstract class Interpreter {
 	/**
 	 * Interpreter name
 	 */
-	private String name;
+	private final String name;
 
 	/**
 	 * initialize interpreter by setting its name and verify if the interpreter has
@@ -68,7 +68,7 @@ public abstract class Interpreter {
 	/**
 	 * tests if the interpreter execution process is available in files system
 	 * 
-	 * @param executorPath
+	 * @param executorPath path to executable
 	 * @return true if its valid, false otherwise
 	 */
 	private boolean hasExecutorAvailable(String executorPath) {
@@ -119,7 +119,7 @@ public abstract class Interpreter {
 	 * "interpreter.<i><b>interpreterName</i></b>" (to be used by the interpreter
 	 * specific implementation as needed)
 	 * 
-	 * @return
+	 * @return interpreter properties
 	 */
 	protected Properties getProperties() {
 		return properties;

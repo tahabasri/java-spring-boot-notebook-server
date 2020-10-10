@@ -12,5 +12,5 @@ import com.tahabasri.projects.notebookserver.models.entities.InterpreterContext;
  *
  */
 public interface InterpreterContextRepository extends JpaRepository<InterpreterContext, Long> {
-	public InterpreterContext findByInterpreterName(String interpreterName);
+	InterpreterContext findByInterpreterName(String interpreterName);
 }

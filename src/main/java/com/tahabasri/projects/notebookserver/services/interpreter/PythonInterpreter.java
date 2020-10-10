@@ -16,7 +16,6 @@ import com.tahabasri.projects.notebookserver.models.InterpretationRequest;
 import com.tahabasri.projects.notebookserver.models.entities.InterpreterContext;
 
 public class PythonInterpreter extends Interpreter {
-
 	private static final Logger logger = LogManager.getLogger(Interpreter.class);
 
 	public PythonInterpreter(InterpreterContext context) {
@@ -69,7 +68,7 @@ public class PythonInterpreter extends Interpreter {
 	 * @param output   interpreter configured output
 	 */
 	private void initializeExecutor(DefaultExecutor executor, ByteArrayOutputStream output) {
-		logger.debug("Initializeing interpreter executor");
+		logger.debug("Initializing interpreter executor");
 		PumpStreamHandler psh = new PumpStreamHandler(output);
 
 		// read property from external properties file

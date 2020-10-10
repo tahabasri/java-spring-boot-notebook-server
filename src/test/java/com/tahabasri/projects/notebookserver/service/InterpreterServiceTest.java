@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.Before;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.core.env.Environment;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -48,6 +50,9 @@ public class InterpreterServiceTest {
 	@Autowired
 	private InterpreterService interpreterService;
 
+	@Autowired
+	private Environment env;
+
 	@MockBean
 	private InterpreterContextRepository contextRepository;
 
@@ -58,15 +63,16 @@ public class InterpreterServiceTest {
 	private InterpreterLookup interpreterLookup;
 
 	@Before
-	public void setUp() throws Exception {
+	public void setUp() {
 		ReflectionTestUtils.setField(interpreterService, "codeRequestPattern", "%[a-z]{3,}[ ]//S.+");
 
-		String pythonExec = "D:/dev/data/notebook/interpreter/python/python.exe";
+		// this still depend on external resource, to change if someone got time :)
+		String pythonExec = env.getProperty("default.interpreter.path");
 
 		InterpreterContext context = new InterpreterContext("python", pythonExec, null);
 		Session session = new Session(951L, context, Arrays.asList("import math", "print 1+1"));
 		session.setId(159753L);
-		List<Session> sessions = Arrays.asList(session);
+		List<Session> sessions = Collections.singletonList(session);
 		context.setSessions(sessions);
 
 		Mockito.when(contextRepository.findByInterpreterName("python")).thenReturn(context);
@@ -91,7 +97,7 @@ public class InterpreterServiceTest {
 		if (request != null) {
 			assertEquals(request.getStatus(), InterpretationRequest.INTERPRETATION_REQUEST_WRONG_SYNTAX);
 		} else {
-			assertNull(request);
+			assertNull(null);
 		}
 	}
 

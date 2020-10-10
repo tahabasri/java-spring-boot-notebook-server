@@ -2,6 +2,7 @@ package com.tahabasri.projects.notebookserver.services;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -21,7 +22,6 @@ import com.tahabasri.projects.notebookserver.services.interpreter.InterpreterLoo
 
 @Service
 public class InterpreterServiceImpl implements InterpreterService {
-
 	private static final Logger logger = LogManager.getLogger(InterpreterService.class);
 
 	/**
@@ -40,11 +40,11 @@ public class InterpreterServiceImpl implements InterpreterService {
 	@Override
 	public InterpretationRequest validateAndParseInterpretationRequest(UserRequestInput interpretationRequest) {
 		if (validateRequestCode(interpretationRequest.getCode())) {
-			logger.info("User code has good syntaxt, parsing it ...");
+			logger.info("User code has good syntax, parsing it ...");
 			InterpretationRequest request = new InterpretationRequest(interpretationRequest);
 
 			if (request.isBlank()) {
-				logger.warn("User code was not fully parsed, mark it as having wrong syntaxt");
+				logger.warn("User code was not fully parsed, mark it as having wrong syntax");
 				return requestWithStatus(request, InterpretationRequest.INTERPRETATION_REQUEST_WRONG_SYNTAX);
 			}
 
@@ -75,18 +75,18 @@ public class InterpreterServiceImpl implements InterpreterService {
 	 * validates the request code by evaluating it against a pre-defined pattern
 	 * 
 	 * @param code request code
-	 * @return true if code has good syntaxt, false otherwise
+	 * @return true if code has good syntax, false otherwise
 	 */
 	private boolean validateRequestCode(String code) {
 		logger.info("Validating user code");
-		boolean validValue = code != null && code != null && !code.isEmpty();
+		boolean validValue = code != null && !code.isEmpty();
 
 		if (codeRequestPattern != null) {
-			logger.debug("Parsing code special caracters");
+			logger.debug("Parsing code special characters");
 			codeRequestPattern = codeRequestPattern.replaceAll("//", "\\\\");
 		}
 
-		return validValue && code.matches(codeRequestPattern);
+		return validValue && code.matches(Objects.requireNonNull(codeRequestPattern));
 	}
 
 	/**
@@ -155,6 +155,9 @@ public class InterpreterServiceImpl implements InterpreterService {
 				logger.info("Attach properties to " + context.getInterpreterName() + "interpreter");
 				interpreter.setProperties(interpreterLookup.readPropertiesForInterpreter(context.getInterpreterName()));
 				interpreter.interpret(interpretationRequest, context, result);
+			}else{
+				return new ExecutionResult(ExecutionResult.RESULT_ERROR,
+						String.format("Couldn't find '%s' interpreter on server.", context.getInterpreterName()));
 			}
 		}
 
@@ -229,8 +232,8 @@ public class InterpreterServiceImpl implements InterpreterService {
 	/**
 	 * saves request code for the user given session
 	 * 
-	 * @param session
-	 * @param interpretationRequest
+	 * @param session session model
+	 * @param interpretationRequest interpretation request
 	 */
 	private void saveSessionCode(Session session, InterpretationRequest interpretationRequest) {
 		List<String> codeLines = session.getCodeLines();
@@ -256,10 +259,8 @@ public class InterpreterServiceImpl implements InterpreterService {
 				List<Session> sessions = context.getSessions();
 
 				if (sessions != null) {
-					Session session = sessions.stream().filter(s -> sessionId.longValue() == s.getId()).findAny()
+					return sessions.stream().filter(s -> sessionId.longValue() == s.getId()).findAny()
 							.orElse(null);
-
-					return session != null ? session : null;
 				}
 			}
 
@@ -275,8 +276,7 @@ public class InterpreterServiceImpl implements InterpreterService {
 	 */
 	private Long getSessionIdentifier(String requestSessionId) {
 		try {
-			Long sessionId = Long.valueOf(requestSessionId);
-			return sessionId;
+			return Long.valueOf(requestSessionId);
 		} catch (Exception e) {
 			logger.error("Error in parsing the sessionId " + e.getMessage());
 			return null;

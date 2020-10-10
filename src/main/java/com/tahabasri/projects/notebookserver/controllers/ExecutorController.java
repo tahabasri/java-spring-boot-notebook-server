@@ -3,6 +3,7 @@ package com.tahabasri.projects.notebookserver.controllers;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,60 +18,66 @@ import com.tahabasri.projects.notebookserver.services.InterpreterService;
 
 /**
  * Web interface to interact with the application business logic
- * 
- * @author Taha BASRI
  *
+ * @author Taha BASRI
  */
 @RestController
 @RequestMapping(ExecutorController.BASE_URL)
 public class ExecutorController {
 
-	private static final Logger logger = LogManager.getLogger(ExecutorController.class);
-	/**
-	 * REST base URL suffix, used to access this controller's end points, the full
-	 * URL is : http://IP:port<i>BASE_URL</i>
-	 */
-	public static final String BASE_URL = "/api/v1/execute";
+    private static final Logger logger = LogManager.getLogger(ExecutorController.class);
+    /**
+     * REST base URL suffix, used to access this controller's end points, the full
+     * URL is : http://IP:port<i>BASE_URL</i>
+     */
+    public static final String BASE_URL = "/api/v1/execute";
 
-	@Autowired
-	private InterpreterService interpreterService;
+    @Autowired
+    private Environment env;
 
-	/**
-	 * Used to checks if the service is fully working
-	 * 
-	 * @return "Alive!" message if all good, none or error message otherwise
-	 */
-	@GetMapping
-	public String status() {
-		return "Alive!";
-	}
+    @Autowired
+    private InterpreterService interpreterService;
 
-	/**
-	 * 'execute' end point : to be called to interpret user given code request, a
-	 * <b>sessionId</b> field may be passed in URL to benefit from session aware
-	 * interpretation (preserving variables state)
-	 * 
-	 * @param request   user request in the form of
-	 *                  {code:{%'interpreter-name''whitespace''code''}}
-	 * @param sessionId session field value if given
-	 * @return executed interpretation result if syntax is good and execution is OK,
-	 *         error message otherwise
-	 */
-	@PostMapping
-	public ExecutionResult execute(@RequestBody UserRequestInput request,
-			@RequestParam(required = false) String sessionId) {
-		logger.info("Calling '/execute' endpoint ...");
+    /**
+     * Used to checks if the service is fully working
+     *
+     * @return "Alive!" message if all good, none or error message otherwise
+     */
+    @SuppressWarnings("SameReturnValue")
+    @GetMapping
+    public String status() {
+        return "Alive!";
+    }
 
-		request.setSessionId(sessionId);
+    /**
+     * 'execute' end point : to be called to interpret user given code request, a
+     * <b>sessionId</b> field may be passed in URL to benefit from session aware
+     * interpretation (preserving variables state)
+     *
+     * @param request   user request in the form of
+     *                  {code:{%'interpreter-name''whitespace''code''}}
+     * @param sessionId session field value if given
+     * @return executed interpretation result if syntax is good and execution is OK,
+     * error message otherwise
+     */
+    @PostMapping
+    public ExecutionResult execute(@RequestBody UserRequestInput request,
+                                   @RequestParam(required = false) String sessionId) {
+        logger.info("Calling '/execute' endpoint ...");
 
-		InterpretationRequest interpretationRequest = interpreterService.validateAndParseInterpretationRequest(request);
+        request.setSessionId(sessionId);
 
-		ExecutionResult executionResult = new ExecutionResult();
-		if (interpretationRequest.isGoodForInterpretation()) {
-			executionResult = interpreterService.interpretRequest(interpretationRequest);
-		}
+        InterpretationRequest interpretationRequest = interpreterService.validateAndParseInterpretationRequest(request);
 
-		return executionResult;
-	}
+        ExecutionResult executionResult;
+        if (interpretationRequest != null && interpretationRequest.isGoodForInterpretation()) {
+            executionResult = interpreterService.interpretRequest(interpretationRequest);
+        } else {
+            return new ExecutionResult(ExecutionResult.RESULT_ERROR,
+                    String.format("Couldn't parse input code, check that it matches following regex : '%s'", env.getProperty("global.request.pattern")));
+        }
+
+        return executionResult;
+    }
 
 }

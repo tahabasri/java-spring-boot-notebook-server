@@ -21,7 +21,7 @@ public interface InterpreterService {
 	 * @return interpretation parsed request, holds metadata for interpreter,
 	 *         request health and session
 	 */
-	public InterpretationRequest validateAndParseInterpretationRequest(UserRequestInput interpretationRequest);
+	InterpretationRequest validateAndParseInterpretationRequest(UserRequestInput interpretationRequest);
 
 	/**
 	 * interpret user already parsed request, deals with request session (if it's
@@ -30,5 +30,5 @@ public interface InterpreterService {
 	 * @param interpretationRequest user parsed request
 	 * @return execution result with interpretation status and final result
 	 */
-	public ExecutionResult interpretRequest(InterpretationRequest interpretationRequest);
+	ExecutionResult interpretRequest(InterpretationRequest interpretationRequest);
 }

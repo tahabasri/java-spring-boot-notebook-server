@@ -1,6 +1,6 @@
 package com.tahabasri.projects.notebookserver.bootstrap;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,11 +29,11 @@ public class BootStrapData implements CommandLineRunner{
 	 * 
 	 */
 	@Override
-	public void run(String... args) throws Exception {
+	public void run(String... args) {
 		Session session = new Session(321L, null, null) ;
 		
 		InterpreterContext context = new InterpreterContext(interpreterName, interpreterPath, null);
-		List<Session> sessions = Arrays.asList(session);
+		List<Session> sessions = Collections.singletonList(session);
 		context.setSessions(sessions);
 		session.setContext(context);
 		

@@ -33,7 +33,7 @@ Create a POST request to the `/execute` endpoint with a JSON object such as:
 }
 ```
 The endpoint parses this input and compute what the output of the python program is.
-The code is formatted like this:
+The code gets formatted like this:
 ```
 %<interpreter-name><whitespace><code>
 ```
@@ -47,6 +47,9 @@ The returned output is :
 
 ### Variables and state
 
+**To enable state preservation, you should add a query param to your URL with a random session ID `?sessionId=1`.
+The value for sessionId will identify your session and retrieve your variables for future requests.**
+
 If a user uses a variable in a piece of code, it will be accessible on subsequent executions. For example. The following requests are send:
 ```
 {
@@ -59,7 +62,7 @@ This returns:
 “result”: “”
 }
 ```
-Then a second piece of code is sent, which uses a result from the previous request. The state of the interpreter is preserved after each call:
+Then a second piece of code gets sent, which uses a result from the previous request. The state of the interpreter gets preserved after each call:
 ```
 {
 “code”: “%python print a+1”
@@ -73,14 +76,14 @@ This returns :
 ```
 
 ### Sessions
-The application can be used by multiple users at the same time, it differentiate them from information in the request. 
+The application can be used by multiple users at the same time, it differentiated them from information in the request. 
 
 Requests with the same sessionId can access the same variables, but requests with a different sessionId don’t have this access.
 
 ### Configure the application
-The application is mainly configurable via the file application.properties, within this file, the user may set its own values for interpretation, the following variables are considered:
+The application is mainly configurable via the file application.properties, within this file, the user may set its own values for interpretation, we consider the following variables:
 ```properties
-  # using // instead of \ for special caracters working-around (example for this pattern: %<interpreter-name><whitespace><code>)
+  # using // instead of \ for special characters working-around (example for this pattern: %<interpreter-name><whitespace><code>)
 global.request.pattern=%[a-z]{3,}[ ]//S.+
   # default interpreter executor path
 default.interpreter.path=D:/dev/data/notebook/interpreter/python/python.exe
@@ -92,15 +95,15 @@ interpreter.python.timeout=5000
 interpreter.python.separator=;
 ```
 
-For each interpreter, its own variables keys are starting with interpreter.<interpreter-name>.key, the application will read those variables and it will make them available for use by their correspending interpreter.
+For each interpreter, its own variables keys are starting with an interpreter.<interpreter-name>.key, the application will read those variables, and it will make them available for use by their corresponding interpreter.
 
 ### Add a new interpreter
 
 Want to contribute? Great!
 
-The project is developed so anyone can add its own interpreter. To do this, the following actions must be done:
-* Create a new implementation of the abstract class 'com.tahabasri.projects.notebookserver.services.interpreter.Interpreter', this class offers the basic methods to initialize the path for the execution process used by the new implementation, the name of the interpreter and an access to all properties defined in application.properties whome their keys starting with interpreter.<interpreter-name>. An abstract method 'interpret()' must be implemented with the new interpreter logic.
-* After that, define a new instance of your interpreter in the class 'com.tahabasri.projects.notebookserver.bootstrap.BootStrapData' and add it to the repository, initialise it with the required parameters : interpreter execution path and interpreter name. Additionnel parameters can be specified in the application.properties file
+The project has been developed so anyone can add its own interpreter. To do this, the following actions must be done:
+* Create a new implementation of the abstract class 'com.tahabasri.projects.notebookserver.services.interpreter.Interpreter', this class offers the basic methods to initialize the path for the execution process used by the new implementation, the name of the interpreter and access to all properties defined in application.properties whom their keys starting with an interpreter.<interpreter-name>. An abstract method 'interpret()' must be implemented with the new interpreter logic.
+* After that, define a new instance of your interpreter in the class 'com.tahabasri.projects.notebookserver.bootstrap.BootStrapData' and add it to the repository, initialise it with the required parameters : interpreter execution path and interpreter name. Additional parameters can be specified in the application.properties file.
 
 ## Technical overview
 
@@ -112,4 +115,4 @@ The project uses a number of open source projects to work properly:
 * Apache commons exec
 * Log4J
 
-And of course the project itself is open source on GitHub.
+and of course the project itself is open source on GitHub.

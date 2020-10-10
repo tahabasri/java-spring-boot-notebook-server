@@ -7,6 +7,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
+import org.springframework.core.env.Environment;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -33,9 +34,13 @@ public class InterpreterTest {
 	@Autowired
 	private InterpreterLookup interpreterLookup;
 
+	@Autowired
+	private Environment env;
+
 	@Test
 	public void testInterpretPythonCode() {
-		String pythonExec = "D:/dev/data/notebook/interpreter/python/python.exe";
+		// this still depend on external resource, to change if someone got time :)
+		String pythonExec = env.getProperty("default.interpreter.path");
 		InterpreterContext context = new InterpreterContext("python", pythonExec, null);
 
 		Interpreter interpreter = interpreterLookup.getInterpreter(context);

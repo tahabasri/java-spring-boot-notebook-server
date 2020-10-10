@@ -9,7 +9,7 @@ public class JavaSpringBootNotebookServerApplication {
 	/**
 	 * initialize application context and deploy application in embedded server
 	 * 
-	 * @param args
+	 * @param args inline args
 	 */
 	public static void main(String[] args) {
 		SpringApplication.run(JavaSpringBootNotebookServerApplication.class, args);

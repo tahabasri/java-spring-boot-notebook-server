@@ -6,6 +6,7 @@ import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.Before;
@@ -35,19 +36,18 @@ public class InterpreterContextRepositoryTest {
 	private SessionRepository sessionRepository;
 
 	private InterpreterContext context;
-	private Session session;
 
-	private String interpreterName = "python";
+	private final String interpreterName = "python";
 	private Long sessionId;
 
 	@Before
-	public void setUp() throws Exception {
-		session = new Session(156L, null, Arrays.asList("import math", "print 1+1"));
+	public void setUp() {
+		Session session = new Session(156L, null, Arrays.asList("import math", "print 1+1"));
 
 		session = entityManager.merge(session);
 
 		context = new InterpreterContext(interpreterName, "pythonFullPath", null);
-		List<Session> sessions = Arrays.asList(session);
+		List<Session> sessions = Collections.singletonList(session);
 		context.setSessions(sessions);
 
 		context = entityManager.merge(context);
@@ -69,7 +69,7 @@ public class InterpreterContextRepositoryTest {
 
 		if (searchedForContext != null) {
 			List<Session> sessions = searchedForContext.getSessions();
-			Session session = sessions.stream().filter(s -> sessionId == s.getId()).findAny().orElse(null);
+			Session session = sessions.stream().filter(s -> sessionId.equals(s.getId())).findAny().orElse(null);
 			assertNotNull(session);
 		} else {
 			fail("Context not found");
@@ -102,7 +102,7 @@ public class InterpreterContextRepositoryTest {
 
 		if (searchedForContext != null) {
 			List<Session> sessions = searchedForContext.getSessions();
-			Session session = sessions.stream().filter(s -> sessionId == s.getId()).findAny().orElse(null);
+			Session session = sessions.stream().filter(s -> sessionId.equals(s.getId())).findAny().orElse(null);
 
 			if (session != null) {
 				List<String> codeLines = session.getCodeLines();
@@ -113,7 +113,6 @@ public class InterpreterContextRepositoryTest {
 					session = sessionRepository.saveAndFlush(session);
 
 					assertThat(session.getCodeLines()).isEmpty();
-					;
 				} else {
 					fail("No lines found");
 				}

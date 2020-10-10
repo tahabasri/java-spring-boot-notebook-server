@@ -7,19 +7,18 @@ package com.tahabasri.projects.notebookserver.models;
  * <li>result content : the interpretation result if status is OK, error message
  * otherwise</li>
  * </ul>
- * 
- * @author Taha BASRI
  *
+ * @author Taha BASRI
  */
 public class ExecutionResult {
-	public static final String RESULT_OK = "result";
-	public static final String RESULT_ERROR = "error";
+    public static final String RESULT_OK = "result";
+    public static final String RESULT_ERROR = "error";
 
-	private String resultType;
-	private String resultContent;
+    private String resultType;
+    private String resultContent;
 
-	public ExecutionResult() {
-	}
+    public ExecutionResult() {
+    }
 
 	public ExecutionResult(String resultType, String resultContent) {
 		this.resultType = resultType;
@@ -30,21 +29,21 @@ public class ExecutionResult {
 		return resultType;
 	}
 
-	public void setResultType(String resultType) {
-		this.resultType = resultType;
-	}
+    public void setResultType(String resultType) {
+        this.resultType = resultType;
+    }
 
-	public String getResultContent() {
-		return resultContent;
-	}
+    public String getResultContent() {
+        return resultContent;
+    }
 
-	public void setResultContent(String resultContent) {
-		this.resultContent = resultContent;
-	}
+    public void setResultContent(String resultContent) {
+        this.resultContent = resultContent;
+    }
 
-	@Override
-	public String toString() {
-		return "ExecutionResult [resultType=" + resultType + ", resultContent=" + resultContent + "]";
-	}
+    @Override
+    public String toString() {
+        return "ExecutionResult [resultType=" + resultType + ", resultContent=" + resultContent + "]";
+    }
 
 }

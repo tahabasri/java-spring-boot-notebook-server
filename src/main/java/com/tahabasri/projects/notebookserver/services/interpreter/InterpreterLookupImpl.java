@@ -32,7 +32,7 @@ public class InterpreterLookupImpl implements InterpreterLookup {
 	/**
 	 * All interpreter instances holder
 	 */
-	private Map<String, Interpreter> interpreterInstances = new HashMap<>();
+	private final Map<String, Interpreter> interpreterInstances = new HashMap<>();
 
 	/**
 	 * checks if the given implementation class exists by loading it by its fully
@@ -50,13 +50,8 @@ public class InterpreterLookupImpl implements InterpreterLookup {
 
 		try {
 			Class<?> cls = Class.forName(packageName + "." + interpreterName + "Interpreter");
-			if (cls != null) {
-				logger.info("'" + interpreterName + "' interpreter implementation was found");
-				return cls;
-			} else {
-				logger.warn("No '" + interpreterName + "' interpreter implementation was found!");
-				return null;
-			}
+			logger.info("'" + interpreterName + "' interpreter implementation was found");
+			return cls;
 		} catch (ClassNotFoundException e) {
 			logger.error("No '" + interpreterName + "' interpreter implementation was found : " + e.getMessage());
 			logger.debug("Error in loading interpreter implementation : " + e);
@@ -69,7 +64,7 @@ public class InterpreterLookupImpl implements InterpreterLookup {
 		logger.info("Searching for '" + context.getInterpreterName() + "' interpreter implementation");
 		Class<?> interpreterImpl = getInterpreterImplementationClass(context.getInterpreterName());
 		if (interpreterImpl != null) {
-			Interpreter interpreter = null;
+			Interpreter interpreter;
 			String instanceName = context.getInterpreterName() + "Interpreter";
 
 			interpreter = interpreterInstances.get(instanceName);
@@ -82,10 +77,10 @@ public class InterpreterLookupImpl implements InterpreterLookup {
 						+ "' interpreter was found, creating one ...");
 				try {
 					Constructor<?> constructor = interpreterImpl
-							.getConstructor(new Class[] { InterpreterContext.class });
+							.getConstructor(InterpreterContext.class);
 					interpreter = (Interpreter) constructor.newInstance(context);
 					interpreterInstances.put(instanceName, interpreter);
-					logger.warn("A new instance of '" + context.getInterpreterName() + "' interpreter was created");
+					logger.info("A new instance of '" + context.getInterpreterName() + "' interpreter was created");
 					return interpreter;
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -103,7 +98,7 @@ public class InterpreterLookupImpl implements InterpreterLookup {
 		Properties props = new Properties();
 		MutablePropertySources propSrcs = ((AbstractEnvironment) env).getPropertySources();
 		StreamSupport.stream(propSrcs.spliterator(), false).filter(ps -> ps instanceof EnumerablePropertySource)
-				.map(ps -> ((EnumerablePropertySource<?>) ps).getPropertyNames()).flatMap(Arrays::<String>stream)
+				.map(ps -> ((EnumerablePropertySource<?>) ps).getPropertyNames()).flatMap(Arrays::stream)
 				.filter(propName -> propName.startsWith(prefix))
 				.forEach(propName -> props.setProperty(propName, env.getProperty(propName)));
 

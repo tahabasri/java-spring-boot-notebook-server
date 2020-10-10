@@ -21,11 +21,11 @@ public interface InterpreterLookup {
 	 * 
 	 * @return interpreter implementation instance
 	 */
-	public Interpreter getInterpreter(InterpreterContext context);
+    Interpreter getInterpreter(InterpreterContext context);
 
 	/**
 	 * read all properties starting with "interpreter.<i><b>interpreterName</b></i>"
 	 * from application properties file
 	 */
-	public Properties readPropertiesForInterpreter(String interpreterName);
+	Properties readPropertiesForInterpreter(String interpreterName);
 }
